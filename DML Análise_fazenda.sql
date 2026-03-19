@@ -1,35 +1,38 @@
 use Analise_Fazenda;
 
--- Cadastrando a Estufa
+-- Cadastros Iniciais (Estufa, Marca e Técnico)
 insert into estufas (nome_estufa) values ('Estufa Alpha - Hidroponia');
-
--- Cadastrando a Marca
 insert into marca_sensor (nome_marca) values ('Tesla IoT');
-
--- Cadastrando o Técnico
 insert into tecnicos (nome_completo, cpf) values ('Alex Ribeiro', '01234567891');
 
--- Sensor de Pressão na Estufa 1
+-- Cadastro do Sensor de Pressão (ID 1)
 insert into sensores (tipo, versao_firmware, id_estufas, id_marca) 
 values ('Pressão', 'v1.0.4', 1, 1);
 
--- TESTE 1: Leitura Normal (12.5) -> Não deve gerar alerta
-insert into telemetria (valor_leitura, id_sensor) values (12.50000, 1);
+-- Simulação telemetrias para gerar a média recente (AVG)
+insert into telemetria (valor_leitura, id_sensor) values 
+(12.5), (13.2), (12.8), (14.1), (13.5);
 
--- TESTE 2: Leitura Crítica (19.8) -> DEVE disparar a Trigger e criar um Alerta Automático
-insert into telemetria (valor_leitura, id_sensor) values (19.80000, 1);
+-- Teste gerando 3 Alertas Graves via Trigger
+-- Lembrete a trigger esta progamada para disparar a partir de 15.00
+insert into telemetria (valor_leitura, id_sensor) values (19.8), (20.5), (18.9);
 
--- Verifique se o alerta "brotou" na tabela de alertas:
-select * from alertas_iot;
+-- Validando a veracidade da procedure
+-- Call do diagnóstico. Houveram 3 alertas graves recentes, 
+-- A procedure deve mudar o status para 'Manutenção'
+call sp_diagnostico_saude_sensor(1);
 
--- Mudando o status de 'Ativo' para 'Manutenção'
-update sensores set status = 'Manutenção' where id_sensor = 1;
+-- Confirmação dos resultados obtidos
+-- Verificação se o Diagnóstico de IA foi "CRÍTICO"
+-- Verificação se o status do sensor mudou para 'Manutenção'
+select * from sensores where id_sensor = 1;
 
--- Verifique se o "rastro" foi deixado no histórico:
+-- Verifica se a Trigger de Log gravou a mudança automática no histórico
 select * from historico_status_sens;
 
+-- Registro de manutenção fazendo o tecnico entrar em ação
 insert into reg_manutencao (id_sensor, id_tecnico, descricao_problema) 
-values (1, 1, 'Troca de válvula de escape após pico de pressão de 19.8');
+values (1, 1, 'Troca de válvula e recalibração após 3 picos de pressão detectados pela IA');
 
--- Após o conserto, voltamos o sensor para Ativo
+-- Sensor volta a operar normalmente
 update sensores set status = 'Ativo' where id_sensor = 1;
