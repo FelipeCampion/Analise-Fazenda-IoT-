@@ -1,7 +1,7 @@
 # Analise-Fazenda-IoT-
 Banco de Dados MySQL para monitoramento de estufas inteligentes com foco em IoT e telemetria. Inclui triggers automatizadas para alertas de pressão crítica, auditoria de status de sensores (log de eventos), integridade referencial com chaves estrangeiras e controle de manutenção técnica para alta rastreabilidade operacional. 🚜🌾⚡
 
-*ANÁLISE-FAZENDA-IoT*
+*ANALISE-FAZENDA-IoT*
 
 Repositório contendo a arquitetura de banco de dados relacional para monitoramento de estufas agrícolas. O projeto foca em automação de processos via triggers e integridade referencial para dispositivos de telemetria.
 
