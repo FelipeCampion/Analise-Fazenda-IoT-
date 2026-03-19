@@ -127,3 +127,48 @@ end if;
 end//
 
 delimiter ;
+
+delimiter //
+
+create procedure sp_diagnostico_saude_sensor(
+in p_id_sensor int
+)
+
+begin 
+declare v_media_leitura decimal(12,5);
+declare v_total_alertas_graves int;
+declare v_status_atual varchar(20);
+declare v_diagnostico varchar(255);
+
+select avg(valor_leitura) into v_media_leitura
+from(
+select valor_leitura from telemetria
+where id_sensor = p_id_sensor
+order by id_leitura desc limit 10
+) as ultimas_leituras;
+
+select count(*) into v_total_alertas_graves
+from alertas_iot
+    where id_sensor = p_id_sensor
+    and nvl_grav in ('Grave', 'Gravíssimo')
+    and data_alert >= now() - interval 1 day;
+
+if v_total_alertas_graves >=3 then
+set v_diagnostico = 'CRÍTICO: Sensor encaminhado para manutenção automática.';
+update sensores set status = 'Manutenção' where id_sensor = p_id_sensor;
+
+elseif v_total_alertas_graves between 1 and 2 then
+    set v_diagnostico = 'ATENÇÃO: Sensor apresentando instabilidade!!';
+else
+    set v_diagnostico = 'ESTÁVEL: Sensor operando de forma estável!!';
+end if;
+
+select p_id_sensor as 'ID do sensor',
+    ifnull(v_media_leitura, 0) as 'Média recente',
+    v_total_alertas_graves as 'Alertas graves (24h)',
+    v_diagnostico as 'Diagnóstico de IA';
+
+end //
+    
+delimiter ; 
+
