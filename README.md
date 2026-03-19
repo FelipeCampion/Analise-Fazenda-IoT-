@@ -1,26 +1,36 @@
-# Analise-Fazenda-IoT-
-Banco de Dados MySQL para monitoramento de estufas inteligentes com foco em IoT e telemetria. Inclui triggers automatizadas para alertas de pressão crítica, auditoria de status de sensores (log de eventos), integridade referencial com chaves estrangeiras e controle de manutenção técnica para alta rastreabilidade operacional. 🚜🌾⚡
+# Analise-Fazenda-IoT 🚜🌱📡
 
-*ANALISE-FAZENDA-IoT*
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![IoT](https://img.shields.io/badge/Industry-4.0-blueviolet?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen?style=for-the-badge)
 
-Repositório contendo a arquitetura de banco de dados relacional para monitoramento de estufas agrícolas. O projeto foca em automação de processos via triggers e integridade referencial para dispositivos de telemetria.
+**Sistema de Monitoramento Preditivo e Telemetria para Agronegócio com Automação de Manutenção.**
 
-Especificações Técnicas
-Engine: MySQL 8.0
+Este projeto apresenta uma infraestrutura de banco de dados para gestão de sensores em estufas inteligentes. O diferencial aqui é a **camada de inteligência de hardware**, onde o banco de dados monitora a saúde dos sensores e toma decisões automáticas de manutenção baseadas em telemetria.
 
-Objetos: Tabelas, Constraints (FK, CHECK), Triggers de Auditoria e Monitoramento.
+## Arquitetura e Tecnologia
+* **Engine:** MySQL 8.0+
+* **Conceitos Aplicados:** IoT Data Logging, Trilha de Auditoria (Audit Trail), Subqueries em Procedures e Agendamento de Manutenção.
+* **Foco:** Estufas automatizadas e monitoramento de pressão/umidade.
 
-Modelagem: Estrutura normalizada para suporte a leituras de sensores e registros de manutenção técnica.
+## Inteligência e Automações Implementadas
 
-Funcionalidades Implementadas
-Monitoramento de Telemetria: Gatilho configurado para gerar alertas automáticos em tabelas de incidentes quando a leitura de pressão excede o limite de 15.0 (Podendo ser totalmente moldado para fins expecificos).
+### Telemetria e Alertas Automáticos (Triggers)
+* **Monitoramento Crítico:** Através da trigger `monitorar_pressao_alta`, o sistema avalia cada inserção de dado. Valores acima do limite (ex: 15.0) geram alertas instantâneos na tabela `alertas_iot`.
+* **Log de Status:** A trigger `trg_log_stts_sensor` garante a rastreabilidade total, gravando cada mudança de status (Ativo -> Manutenção) com timestamp e valores antigo/novo.
 
-Log de Auditoria: Trigger de atualização que registra transições de status de sensores, utilizando comparação entre os estados OLD e NEW para garantir a veracidade do histórico.
+### Diagnóstico de Saúde via IA (Stored Procedure)
+A grande estrela do projeto é a procedure `sp_diagnostico_saude_sensor`. Ela simula um comportamento de inteligência artificial:
+* **Análise de Contexto:** Calcula a média (`AVG`) apenas das últimas 10 leituras para evitar falsos positivos.
+* **Filtro Temporal:** Analisa a gravidade dos alertas ocorridos estritamente nas últimas 24 horas (`INTERVAL 1 DAY`).
+* **Autocura:** Caso detecte mais de 3 alertas graves, a procedure altera o status do sensor para **'Manutenção'** automaticamente, bloqueando o uso de dados não confiáveis até que um técnico resolva o problema.
 
-Gestão Operacional: Estrutura para controle de ordens de serviço e substituição de componentes vinculados a técnicos especializados.
+### Gestão de Manutenção
+* Registro detalhado de intervenções técnicas, vinculando o problema detectado pela telemetria ao serviço realizado pelo especialista.
 
-Instruções de Uso:
-
-- Certifique-se de que o ambiente MySQL esteja configurado com suporte a Delimitadores (//).
-- Execute o script principal para criação do Schema e das tabelas.
-- Os scripts de inserção para validação das chaves estrangeiras e das triggers estão incluídos no corpo do arquivo SQL.
+## Como Reproduzir os Testes
+1. Execute o script de estrutura (**DDL**) para criar as estufas, sensores e regras.
+2. Utilize o script de **DML de Teste** fornecido para simular os picos de pressão.
+3. Valide a automação executando:
+   ```sql
+   CALL sp_diagnostico_saude_sensor(1);
