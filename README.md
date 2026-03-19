@@ -1,7 +1,6 @@
 # Analise-Fazenda-IoT 🚜🌱📡
 
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![IoT](https://img.shields.io/badge/Industry-4.0-blueviolet?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen?style=for-the-badge)
 
 **Sistema de Monitoramento Preditivo e Telemetria para Agronegócio com Automação de Manutenção.**
