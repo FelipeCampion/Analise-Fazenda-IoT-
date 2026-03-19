@@ -128,6 +128,8 @@ end//
 
 delimiter ;
 
+-- Criação da Procedure de análise e Alert referente a saúde dos sensores presentes na fazenda
+
 delimiter //
 
 create procedure sp_diagnostico_saude_sensor(
