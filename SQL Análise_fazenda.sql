@@ -1,8 +1,8 @@
-create database Análise_Fazenda
+create database Analise_Fazenda
 character set utf8mb4
 collate utf8mb4_0900_ai_ci;
 
-use Análise_Fazenda;
+use Analise_Fazenda;
 
 create table estufas(
 id_estufas int auto_increment primary key,
