@@ -1,3 +1,5 @@
+use Analise_Fazenda;
+
 -- Cadastrando a Estufa
 insert into estufas (nome_estufa) values ('Estufa Alpha - Hidroponia');
 
