@@ -7,7 +7,7 @@ insert into estufas (nome_estufa) values ('Estufa Alpha - Hidroponia');
 insert into marca_sensor (nome_marca) values ('Tesla IoT');
 
 -- Cadastrando o Técnico
-insert into tecnicos (nome_completo, cpf) values ('Felipe Campion', '46290153889');
+insert into tecnicos (nome_completo, cpf) values ('Alex Ribeiro', '01234567891');
 
 -- Sensor de Pressão na Estufa 1
 insert into sensores (tipo, versao_firmware, id_estufas, id_marca) 
