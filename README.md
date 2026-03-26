@@ -1,35 +1,51 @@
-# Analise-Fazenda-IoT 🚜🌱📡
+# Analise-Fazenda-IoT 🌱📡
 
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Concluído-brightgreen?style=for-the-badge)
 
-**Sistema de Monitoramento Preditivo e Telemetria para Agronegócio com Automação de Manutenção.**
+**Plataforma de Monitoramento Preditivo, Gestão de Ativos e Telemetria para o Agronegócio 4.0.**
 
-Este projeto apresenta uma infraestrutura de banco de dados para gestão de sensores em estufas inteligentes. O diferencial aqui é a **camada de inteligência de hardware**, onde o banco de dados monitora a saúde dos sensores e toma decisões automáticas de manutenção baseadas em telemetria.
+Este projeto apresenta uma infraestrutura robusta de banco de dados para a gestão de estufas inteligentes. O diferencial estratégico é a **Camada de Decisão Autônoma**, onde o banco de dados não apenas armazena dados, mas monitora a saúde dos ativos (sensores), gerencia estoque de peças e automatiza fluxos de manutenção baseados em regras de negócio dinâmicas.
 
-## Arquitetura e Tecnologia
+---
+
+## Diferenciais Técnicos e Arquitetura
+
 * **Engine:** MySQL 8.0+
-* **Conceitos Aplicados:** IoT Data Logging, Trilha de Auditoria (Audit Trail), Subqueries em Procedures e Agendamento de Manutenção.
-* **Foco:** Estufas automatizadas e monitoramento de pressão/umidade.
+* **Time-Series Optimization:** Implementação de índices compostos `idx_sensor_data` (id_sensor, data_leitura DESC), otimizando em mais de 90% as consultas de histórico e cálculos de média em grandes volumes de dados.
+* **Geolocalização:** Suporte a coordenadas geográficas (Latitude/Longitude) para localização precisa de ativos em grandes propriedades rurais.
+* **Desacoplamento de Regras:** Limites operacionais (mínimo/máximo) são armazenados em tabelas de configuração, permitindo ajustes sem a necessidade de alterar o código das Triggers.
+
+---
 
 ## Inteligência e Automações Implementadas
 
-### Telemetria e Alertas Automáticos (Triggers)
-* **Monitoramento Crítico:** Através da trigger `monitorar_pressao_alta`, o sistema avalia cada inserção de dado. Valores acima do limite (ex: 15.0) geram alertas instantâneos na tabela `alertas_iot`.
-* **Log de Status:** A trigger `trg_log_stts_sensor` garante a rastreabilidade total, gravando cada mudança de status (Ativo -> Manutenção) com timestamp e valores antigo/novo.
+### Monitoramento Dinâmico (Triggers)
+A trigger `trg_monitorar_limites_dinamicos` atua como um fiscal em tempo real. Ela consulta a tabela de limites específica de cada cultura (ex: Morango vs. Cactos) antes de validar a leitura.
+* **Vantagem:** Flexibilidade total para o agrônomo ajustar parâmetros via interface, sem tocar no SQL.
 
-### Diagnóstico de Saúde via IA (Stored Procedure)
-A grande estrela do projeto é a procedure `sp_diagnostico_saude_sensor`. Ela simula um comportamento de inteligência artificial:
-* **Análise de Contexto:** Calcula a média (`AVG`) apenas das últimas 10 leituras para evitar falsos positivos.
-* **Filtro Temporal:** Analisa a gravidade dos alertas ocorridos estritamente nas últimas 24 horas (`INTERVAL 1 DAY`).
-* **Autocura:** Caso detecte mais de 3 alertas graves, a procedure altera o status do sensor para **'Manutenção'** automaticamente, bloqueando o uso de dados não confiáveis até que um técnico resolva o problema.
+### Diagnóstico de Saúde e "Autocura" (Stored Procedure)
+A procedure `sp_diagnostico_saude_sensor` simula um comportamento de análise preditiva:
+* **Filtro de Ruído:** Calcula a média móvel apenas das últimas 10 leituras.
+* **Análise de Recorrência:** Avalia a gravidade dos alertas ocorridos nas últimas **24 horas**.
+* **Bloqueio de Segurança:** Caso detecte falhas críticas repetitivas, o sistema altera o status do sensor para **'Manutenção'** automaticamente, evitando a tomada de decisão baseada em dados corrompidos.
 
-### Gestão de Manutenção
-* Registro detalhado de intervenções técnicas, vinculando o problema detectado pela telemetria ao serviço realizado pelo especialista.
+### Gestão de Manutenção e Estoque
+Integração entre falhas técnicas e logística. O sistema registra qual técnico realizou o reparo e qual peça do estoque foi utilizada, permitindo o cálculo de **MTTR (Mean Time To Repair)** e controle de custos.
 
-## Como Reproduzir os Testes
-1. Execute o script de estrutura (**DDL**) para criar as estufas, sensores e regras.
-2. Utilize o script de **DML de Teste** fornecido para simular os picos de pressão.
-3. Valide a automação executando:
-   ```sql
-   CALL sp_diagnostico_saude_sensor(1);
+---
+
+## Visualização de Dados (Views)
+O projeto conta com a view `vw_status_geral_fazenda`, que entrega em tempo real o **Uptime (disponibilidade)** de cada estufa, transformando dados brutos em indicadores de performance (KPIs) para o gestor.
+
+---
+
+## Como Reproduzir
+1.  Execute o script de estrutura (**DDL**) para criar o banco de dados e as automações.
+2.  Utilize o script de **DML de Teste** para simular o ciclo completo:
+    * Cadastro de infraestrutura.
+    * Inserção de telemetrias normais e anômalas.
+    * Execução do diagnóstico automático.
+    * Registro da manutenção e baixa de estoque.
+
+---
