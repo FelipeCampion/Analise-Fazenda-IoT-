@@ -47,7 +47,7 @@ id_leitura bigint auto_increment primary key,
 valor_leitura decimal (12,5) not null,
 data_leitura timestamp default current_timestamp,
 id_sensor int,
-index idx_sensor_data telemetria (id_sensor, data_leitura desc)
+index idx_sensor_data (id_sensor, data_leitura desc)
 );
 
 -- Criação dos registros de possíveis alerts no sistema
